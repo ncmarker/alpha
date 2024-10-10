@@ -1,0 +1,73 @@
+<html>
+	<head>
+		<title>
+			ITP 460 Project managment class
+		</title>
+		<!--
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+		-->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">	
+		
+	</head>
+	<body>
+		<div class="container">
+			<div class="row text-center">
+				<h1>Welcome to ITP 460 class</h1>
+			</div>
+			<div class="row text-center justify-content-md-center"></div>
+				<div class="col col-2">Home Page</div>
+				<div class="col col-2">Classes</div>
+				<div class="col col-2">About us</div>
+				<div class="col col-2">Contact us</div>
+			</div>
+			<div class="row">
+				<a class="btn btn-primary" data-bs-toggle="collapse" href="#trojandetails" role="button" aria-expanded="false" aria-controls="trojandetails">
+					We are Trojans!
+				</a>
+				<div class="collapse" id="trojandetails">
+					<div class="card card-body">
+						We are great in Football! and we beat UCLA all the time!
+					</div>
+					<div class="card card-body">
+						Our mascot is actually a horse! Who knew!
+					</div>
+				</div>
+			</div>
+
+			<div class= "row">
+				<!-- Button trigger modal -->
+				<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+				Display Mascot!
+				</button>
+
+				<!-- Modal -->
+				<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="modal-title fs-5" id="exampleModalLabel">TRAVELLER!</h1>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<img style = "width:100px" src="https://today.usc.edu/wp-content/uploads/2017/12/Ride-on-traveler.jpg" alt="Traveler">
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					</div>
+					</div>
+				</div>
+				</div>
+			</div>
+
+
+			<div class="row">
+				<p>Progress to completing project:</p>
+				<div class="progress" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width:50%; margin:20px">
+					<div class="progress-bar bg-success" style="width: 25%"></div>
+				  </div>
+			</div>
+
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+	</body>
+</html>
