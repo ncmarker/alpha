@@ -1,25 +1,28 @@
 import React, { useState } from 'react';
-import { FaHome, FaUser, FaCalendarAlt, FaCog, FaSignOutAlt, FaCheckSquare } from 'react-icons/fa'; // importing icons
+// import { FaHome, FaUser, FaCalendarAlt, FaCog, FaCircleNotch, FaSignOutAlt, FaCheckSquare } from 'react-icons/fa'; // importing icons
+
+import { FaHome, FaUser, FaCheckSquare, FaSignOutAlt, FaCircleNotch, FaBars, FaChevronLeft } from 'react-icons/fa'; // Updated icons
+
+
 import { IoSparkles } from "react-icons/io5"; // more icon
-import { FaCircleNotch } from "react-icons/fa"; // temp logo icon
-import { GiHamburgerMenu } from "react-icons/gi"; // menu icon
+// import { GiHamburgerMenu, GiArrowRight } from "react-icons/gi"; // menu icons
 import { Link } from 'react-router-dom';
 
 export default function Sidebar() {
     const [expanded, setExpanded] = useState(true);
 
     return (
-    <div className={`h-screen w-64 bg-gray-100 border-r border-gray-300 flex flex-col ease-in-out duration-300 ${expanded ? 'w-64' : 'w-14'}`}>
+    <div className={`h-screen bg-gray-100 border-r border-gray-300 flex flex-col ease-in-out duration-300 ${expanded ? 'w-64' : 'w-14'}`}>
         <div className="p-4">
+            {/* when sidebar is open */}
             <div className={`flex items-center space-x-3 ${expanded ? 'block' : 'hidden'}`}>
                 <FaCircleNotch className="h-6 w-6 text-blue-500"/>
                 <span className="text-xl font-bold">TimeSpark</span>
-                <GiHamburgerMenu className ="h-6 w-6 text-grey-500" onClick={()=>setExpanded(!expanded)}/>
-
+                <FaChevronLeft className="h-6 w-6 cursor-pointer" onClick={() => setExpanded(!expanded)} />
             </div>
-            <div className={`flex items-center space-x-3 ${!expanded ? 'block' : 'hidden'}`}>
-                <GiHamburgerMenu className ="h-6 w-6 text-grey-500" onClick={()=>setExpanded(!expanded)}/>
-
+            {/* when sidebar is closed */}
+            <div className={`flex items-center space-x-3 ${!expanded ? 'block' : 'hidden'}`}>              
+                <FaBars className="h-6 w-6 cursor-pointer" onClick={() => setExpanded(!expanded)} />
             </div>
         </div>
 
