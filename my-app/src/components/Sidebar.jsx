@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
-// import { FaHome, FaUser, FaCalendarAlt, FaCog, FaCircleNotch, FaSignOutAlt, FaCheckSquare } from 'react-icons/fa'; // importing icons
-
 import { FaHome, FaUser, FaCheckSquare, FaSignOutAlt, FaCircleNotch, FaBars, FaChevronLeft } from 'react-icons/fa'; // Updated icons
-
-
+import { useNavigate } from 'react-router-dom';
 import { IoSparkles } from "react-icons/io5"; // more icon
-// import { GiHamburgerMenu, GiArrowRight } from "react-icons/gi"; // menu icons
 import { Link } from 'react-router-dom';
 
-export default function Sidebar() {
+export default function Sidebar({onLogout}) {
     const [expanded, setExpanded] = useState(true);
+    const navigate = useNavigate();
+
+    // handles logout & calls app.js logout
+    const handleLogout = () => {
+        sessionStorage.removeItem('currentUser');
+        onLogout(); 
+        navigate('/'); // back to login/signup page
+      };
 
     return (
     <div className={`h-screen bg-gray-100 border-r border-gray-300 flex flex-col ease-in-out duration-300 ${expanded ? 'w-64' : 'w-14'}`}>
@@ -34,7 +38,7 @@ export default function Sidebar() {
         </nav>
 
         <div className={`p-4 ${expanded ? 'block' : 'hidden'}`}>
-            <button className="flex items-center space-x-2 text-red-500 hover:text-red-700 px-4">
+            <button className="flex items-center space-x-2 text-red-500 hover:text-red-700 px-4" onClick={handleLogout}>
                 <FaSignOutAlt />
                 <span>Logout</span>
             </button>
