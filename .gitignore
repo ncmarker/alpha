@@ -24,3 +24,5 @@ my-app/yarn-error.log*
 
 .DS_Store
 .vercel
+.env
+node_modules
