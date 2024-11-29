@@ -3,6 +3,8 @@ import { FaPlus } from 'react-icons/fa';
 
 import AddTaskModal from "./AddTaskModal";
 
+
+
 export default function TaskList() {
     const [addTaskModalOpen, setAddTaskModalOpen] = useState(false);
 
@@ -10,16 +12,25 @@ export default function TaskList() {
         setAddTaskModalOpen(!addTaskModalOpen);
     };
 
-    // sample tasks data
-    const tasks = [
-        { id: 1, title: "Finish project report", tags: ["work", "urgent"], dueDate: "2024-10-15" },
-        { id: 2, title: "Morning workout", tags: ["fitness"], dueDate: "2024-10-14" },
-        { id: 3, title: "Read a book", tags: ["leisure"], dueDate: "2024-10-16" },
-        { id: 4, title: "Read a book", tags: ["leisure"], dueDate: "2024-10-16" },
-        { id: 5, title: "Read a book", tags: ["leisure"], dueDate: "2024-10-16" },
-        { id: 6, title: "Read a book", tags: ["leisure"], dueDate: "2024-10-16" },
-        { id: 7, title: "Read a book", tags: ["leisure"], dueDate: "2024-10-16" },
-    ];
+    try {
+        const endpoint = "/api/reminders/";
+        const backendUrl = process.env.REACT_APP_BACKEND_URL;
+        const response = await fetch(`${backendUrl}${endpoint}${currentUser}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+  
+        const tasks = await response.json();
+  
+        if (response.ok) {
+
+        } else {
+          alert(data.error);
+        }
+      } catch (err) {
+        alert("Something went wrong: " + err.message);
+      }
 
     return (
         <div className="w-1/2 min-w-[300px] mx-auto mb-8 p-4">

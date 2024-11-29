@@ -134,3 +134,76 @@ export function FullChartAnalysis({ tasks }) {
 
   );
 }
+
+export function InsightBar({ tasks }) {
+  const taskData = tasks || [
+    { name: 'Work', count: 5, color: '#ff6384' },
+    { name: 'Fitness', count: 3, color: '#36a2eb' },
+    { name: 'Sleep', count: 2, color: '#ffce56' },
+    { name: 'Leisure', count: 4, color: '#4bc0c0' },
+  ];
+  
+  async function findMissingKeys(tableA, primaryKeyColumnA, tableB, foreignKeyColumnB) {
+    // Fetch all primary keys from Table A
+    const { data: primaryKeys, error: errorA } = await supabase
+        .from(tableA)
+        .select(primaryKeyColumnA);
+        
+
+    if (errorA) {
+        console.error('Error fetching keys:', errorA);
+        return null;
+    }
+
+    const allPrimaryKeys = primaryKeys.map(record => record[primaryKeyColumnA]);
+
+    const { data: foreignKeys, error: errorB } = await supabase
+        .from(tableB)
+        .select(foreignKeyColumnB);
+
+    if (errorB) {
+        console.error('Error fetching keys:', errorB);
+        return null;
+    }
+
+    // Extract the list of keys from Table B
+    const presentKeys = foreignKeys.map(record => record[foreignKeyColumnB]);
+
+    // Find keys in Table A that are not in Table B
+    const missingKeys = allPrimaryKeys.filter(key => !presentKeys.includes(key));
+
+    return missingKeys;
+}
+
+
+
+  const tableA = 'tags'; 
+  const primaryKeyColumnA = 'tag_id'; 
+  const tableB = 'reminders'; 
+  const foreignKeyColumnB = 'tag_id'; 
+
+  findMissingKeys(tableA, primaryKeyColumnA, tableB, foreignKeyColumnB).then(missingKeys => {
+      console.log('Missing keys:', missingKeys);
+  });
+
+  if (!missingKeys) {
+    const insightMessage = "Good job! You've logged tasks in all your listed categories! Balance is an important part of health work/life scheduling!"
+} else {
+  const insightMessage = "It seems like you're missing any tasks for "+ missingKeys+"Remember, balance is an important part of health work/life scheduling!"
+}
+
+  // const totalTasks = taskData.reduce((sum, task) => sum + task.count, 0);
+
+  return (
+    <div className="w-full min-w-[300px] mx-auto mb-8 p-4">
+        <h2 className="text-2xl font-medium mb-4">Task Distribution</h2>
+        <div className="h-[600px] bg-gray-100 p-4 rounded-lg border border-gray-300 flex flex-col items-center">
+            <div className="flex justify-center items-center h-full w-full p-4 flex-col space-y-3">
+          <p>Hi!</p>
+             
+        </div>
+    </div>
+    </div>
+
+  );
+}
