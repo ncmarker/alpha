@@ -7,7 +7,7 @@ export function ProfileForm() {
     first_name: "",
     last_name: "",
     email: "",
-    month_goal: "",
+    monthly_goal: "",
     goal: "",
   });
 
@@ -15,9 +15,10 @@ export function ProfileForm() {
     // Fetch data when the component mounts
     const fetchData = async () => {
       try {
-        const endpoint = "/api/users/24e5d878-8636-4f0e-b62b-a9587e6aa6bf" 
+        const userId = JSON.parse(sessionStorage.getItem("currentUser"));
+        const endpoint = `/api/users/${userId}`
         const response = await fetch(
-          `https://itp-460-backend-1bytsdine-nick-markers-projects.vercel.app${endpoint}`,
+          `https://itp-460-backend.vercel.app${endpoint}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },
@@ -28,15 +29,21 @@ export function ProfileForm() {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        const data = await response.json();
+        
+
+        const hold = await response.json();
+        const data = hold[0]
+        // console.log(letsgo)
         setProfileData({
           username: data.username || "",
           first_name: data.first_name || "",
           last_name: data.last_name || "",
           email: data.email || "",
-          month_goal: data.month_goal || "",
-          goal: data.goal || "",
+          monthly_goal: data.monthly_goal || "",
+          goal: data.goal || ""
         });
+
+        // console.log(profileData)
       } catch (err) {
         // alert("Something went wrong: " + err.message);
       }
@@ -53,13 +60,15 @@ export function ProfileForm() {
     const userId = JSON.parse(sessionStorage.getItem("currentUser"));
     e.preventDefault();
     try {
-      const endpoint = `/api/users/${userId}`;
+      const userId = JSON.parse(sessionStorage.getItem("currentUser"));
+        const endpoint = `/api/users/${userId}`
+        console.log(JSON.stringify(profileData))
       const response = await fetch(
-        `https://itp-460-backend-1bytsdine-nick-markers-projects.vercel.app${endpoint}`,
+        `https://itp-460-backend.vercel.app${endpoint}`,
         {
-          method: "PUT", 
+          method: "PATCH", 
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(profileData),
+          body: JSON.stringify(profileData)
         }
       );
 
@@ -69,7 +78,7 @@ export function ProfileForm() {
 
       alert("Profile updated successfully!");
     } catch (err) {
-      console.log(profileData)
+      // console.log(profileData)
       alert("Something went wrong: " + err.message);
     }
   };
@@ -129,8 +138,8 @@ export function ProfileForm() {
         <div className="mb-4">
           <label className="block text-gray-700 mb-2">Monthly Goal</label>
           <textarea
-            value={profileData.month_goal}
-            name="month_goal"
+            value={profileData.monthly_goal}
+            name="monthly_goal"
             onChange={handleChange}
             className="border border-gray-300 rounded p-2 w-full"
             rows="3"
