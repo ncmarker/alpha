@@ -8,12 +8,7 @@ Chart.register(CategoryScale);
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export function ChartAnalysis({ tasks }) {
-  const taskData = tasks || [
-    { name: 'Work', count: 5, color: '#ff6384' },
-    { name: 'Fitness', count: 3, color: '#36a2eb' },
-    { name: 'Sleep', count: 2, color: '#ffce56' },
-    { name: 'Leisure', count: 4, color: '#4bc0c0' },
-  ];
+  const taskData = tasks || [];
 
   const totalTasks = taskData.reduce((sum, task) => sum + task.count, 0);
 
@@ -136,6 +131,7 @@ export function FullChartAnalysis({ tasks }) {
 }
 
 export function InsightBar({ tasks }) {
+<<<<<<< Updated upstream
   const taskData = tasks || [
     { name: 'Work', count: 5, color: '#ff6384' },
     { name: 'Fitness', count: 3, color: '#36a2eb' },
@@ -193,6 +189,12 @@ export function InsightBar({ tasks }) {
 }
 
   // const totalTasks = taskData.reduce((sum, task) => sum + task.count, 0);
+=======
+  // import React, { useState, useEffect } from 'react';
+
+
+
+>>>>>>> Stashed changes
 
   return (
     <div className="w-full min-w-[300px] mx-auto mb-8 p-4">

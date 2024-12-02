@@ -16,7 +16,7 @@ function LoginSignup({onLoginSuccess}) {
     try {
       const endpoint = isLogin ? "/api/login" : "/api/register";
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
-      const response = await fetch(`${backendUrl}${endpoint}`, {
+      const response = await fetch(`https://itp-460-backend-1bytsdine-nick-markers-projects.vercel.app${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -26,7 +26,7 @@ function LoginSignup({onLoginSuccess}) {
 
       if (response.ok) {
         // Save logged-in state to sessionStorage
-        // sessionStorage.setItem("currentUser", JSON.stringify(data.userId));
+        sessionStorage.setItem("currentUser", JSON.stringify(data.userId));
         onLoginSuccess(data.userId);
         navigate("/dashboard"); // Redirect to homepage
       } else {
