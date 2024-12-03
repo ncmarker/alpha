@@ -5,6 +5,7 @@ export default function Insights() {
     const [tasks, setTasks] = useState([]);
     const [data, setData] = useState([]);
     const [tags, setTags] = useState([]);
+    const [tagsList,setTagsList] = useState([]);
     const [possibleStatuses, setPossibleStatuses] = useState([])
     const [missingStatuses, setMissingStatuses] = useState([]);
 
@@ -22,10 +23,10 @@ export default function Insights() {
               throw new Error('Failed to fetch tasks');
             }
             const first = await response.json();
-            const data = first[0]
-            setData(first);
-            setTasks(data);
-            // console.log('Fetched tasks:', data);
+            // const data = first[0]
+            // setData(first);
+            setTasks(first);
+            console.log('Fetched tasks:', tasks);
             // console.log('Fetched tasks:', data);
           } catch (err) {
             // setError(err.message);
@@ -51,10 +52,12 @@ export default function Insights() {
               }
       
               const recieved = await response.json();
+              setTagsList(recieved)
               // const possibleStatuses = new Set(recieved.map(tag => tag.name));
               // setTags(recieved); // Store fetched tasks
-              // console.log(recieved)
+              console.log(recieved)
               const data = recieved.map(recieved => recieved.name);
+              
               setTags(data);
               console.log("tags:",tags);
       
@@ -76,25 +79,26 @@ export default function Insights() {
           const fetchTasksAndCalculateMissing = async () => {
             try {
               // Fetch tasks
-              const userId = JSON.parse(sessionStorage.getItem("currentUser"));
-              const endpoint = `/api/reminders/${userId}`; 
-              const response = await fetch(`https://itp-460-backend.vercel.app${endpoint}`, {
-                method: "GET",
-                headers: { "Content-Type": "application/json" }
-              });
+              // const userId = JSON.parse(sessionStorage.getItem("currentUser"));
+              // const endpoint = `/api/reminders/${userId}`; 
+              // const response = await fetch(`https://itp-460-backend.vercel.app${endpoint}`, {
+              //   method: "GET",
+              //   headers: { "Content-Type": "application/json" }
+              // });
         
-              if (!response.ok) {
-                throw new Error('Failed to fetch tasks');
-              }
+              // if (!response.ok) {
+              //   throw new Error('Failed to fetch tasks');
+              // }
         
-              const tasksData = await response.json();
-              setTasks(tasksData);
+              // const tasksData = await response.json();
+              // setTasks(tasksData);
         
               // Map tags to indices
               const tagIndices = tags.map((_, index) => index);
         
               // Extract present tag_ids from tasks
-              const presentTagIds = new Set(tasksData.map(task => task.tag_id));
+              const presentTagIds = new Set(tasks.map(tasks => tasks.tag_id));
+              // console.log("present:",presentTagIds)
         
               // Find missing tag indices
               const missingIndices = tagIndices.filter(index => !presentTagIds.has(index));
@@ -116,7 +120,7 @@ export default function Insights() {
       
         return (
             <div className="w-full min-w-[300px] mx-auto mb-8 p-4">
-            <ChartAnalysis tasks={data}/>
+            <ChartAnalysis tasks={tasks} tags = {tagsList}/>
             <h2 className="text-2xl font-medium mb-4">Suggestions</h2>
             <div className=" bg-gray-100 p-4 rounded-lg border border-gray-300 flex flex-col items-center">
               {missingStatuses.length > 0 ? (
