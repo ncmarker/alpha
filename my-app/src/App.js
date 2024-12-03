@@ -8,6 +8,7 @@ import Insights from './pages/Insights';
 import ManageTasks from './pages/ManageTasks';
 import Profile from './pages/Profile.jsx';
 import LoginSignup from './pages/LoginSignup.jsx';
+import SearchTasks from './pages/SearchTasks';
 
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
                 <Route path="/insights" element={<Insights/>} />
                 <Route path="/manage-tasks" element={<ManageTasks/>} />
                 <Route path="/profile" element={<Profile/>} />
+                <Route path="/search" element={<SearchTasks />} />
                 <Route path="/" element={<Dashboard/>} />
             </Routes>
         </main>

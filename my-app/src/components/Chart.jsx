@@ -8,7 +8,12 @@ Chart.register(CategoryScale);
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export function ChartAnalysis({ tasks }) {
-  const taskData = tasks || [];
+  const taskData = tasks || [
+    { name: 'Work', count: 5, color: '#ff6384' },
+    { name: 'Fitness', count: 3, color: '#36a2eb' },
+    { name: 'Sleep', count: 2, color: '#ffce56' },
+    { name: 'Leisure', count: 4, color: '#4bc0c0' },
+  ];
 
   const totalTasks = taskData.reduce((sum, task) => sum + task.count, 0);
 

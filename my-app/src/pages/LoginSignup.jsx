@@ -16,7 +16,7 @@ function LoginSignup({onLoginSuccess}) {
     try {
       const endpoint = isLogin ? "/api/login" : "/api/register";
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
-      const response = await fetch(`https://itp-460-backend-1bytsdine-nick-markers-projects.vercel.app${endpoint}`, {
+      const response = await fetch(`https://itp-460-backend.vercel.app${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
