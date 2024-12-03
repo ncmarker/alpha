@@ -4,19 +4,9 @@ function SearchTasks() {
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState(null);
   const [searchText, setSearchText] = useState("");
-  // const tasks = [
-  //   { id: 1, name: "Finish pitch deck", date: "Today" },
-  //   { id: 2, name: "Weekly standup", date: "Today" },
-  //   { id: 3, name: "Leg day!", date: "Today" },
-  //   { id: 4, name: "Log hours", date: "Tomorrow, Oct 16" },
-  //   { id: 5, name: "Conduct user interviews", date: "Tomorrow, Oct 16" },
-  //   { id: 6, name: "Prototype mockups", date: "Tomorrow, Oct 16" },
-  //   { id: 7, name: "Meal prep", date: "Tomorrow, Oct 16" },
-  //   { id: 8, name: "Create vacation itinerary", date: "Oct 18, 2024" },
-  // ];
+
 
   useEffect(() => {
-    // Fetch tasks data on component mount
     const fetchfirst = async () => {
       try {
         const userId = JSON.parse(sessionStorage.getItem("currentUser"));
@@ -29,13 +19,8 @@ function SearchTasks() {
           throw new Error('Failed to fetch tasks');
         }
         const data = await response.json();
-        // console.log(first)
-        // const data = first[0]
-        // console.log(data)
-        // setData(first);
         setTasks(data);
-        // console.log('Fetched tasks:', data);
-        // console.log('Fetched tasks:', data);
+
       } catch (err) {
         // setError(err.message);
       }
@@ -92,5 +77,7 @@ function SearchTasks() {
     </div>
   );
 }
+
+
 
 export default SearchTasks;
