@@ -10,6 +10,9 @@ export default function EditTaskModal({ isOpen, onClose, task }) {
     const [dueDate, setDueDate] = useState('');
     const [dueTime, setDueTime] = useState('');
     const [comments, setComments] = useState('');
+    const[newLabelSubmit,setNewLabelSubmit] = useState({name: "",
+        color: "grey",
+      });
     const [newTask, setNewTask] = useState({
         user_id: "",
         title: "",
@@ -30,41 +33,64 @@ export default function EditTaskModal({ isOpen, onClose, task }) {
         }
     }, [task]);
 
-    // Fetch available tags from API
-    useEffect(() => {
-        const fetchTags = async () => {
-            try {
-                const endpoint = '/api/tags';
-                const response = await fetch(`https://itp-460-backend.vercel.app${endpoint}`, {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' },
-                });
+    // fetch tags from database
+    const fetchTags = async () => {
+        try {
+            const endpoint = '/api/tags';
+            const response = await fetch(`https://itp-460-backend.vercel.app${endpoint}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            });
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch tags');
-                }
-
-                const receivedTags = await response.json();
-                const tagObjects = receivedTags.map((tag) => ({
-                    id: tag.id,
-                    name: tag.name,
-                }));
-                setTags(tagObjects);
-            } catch (err) {
-                console.error('Error fetching tags:', err);
+            if (!response.ok) {
+                throw new Error('Failed to fetch tags');
             }
-        };
 
-        fetchTags();
-    }, []);
-
-    const handleAddLabel = () => {
-        if (newLabel && !availableLabels.includes(newLabel)) {
-            setAvailableLabels([...availableLabels, newLabel]);
-            setNewLabel('');
+            const receivedTags = await response.json();
+            const tagObjects = receivedTags.map((tag) => ({
+                id: tag.id,
+                name: tag.name,
+            }));
+            setTags(tagObjects);
+        } catch (err) {
+            console.error('Error fetching tags:', err);
         }
     };
 
+    // Fetch available tags on load
+    useEffect(() => {
+        fetchTags();
+    }, []);
+
+    // add label to possible labels for reminder
+    const handleAddLabel = async (e) => {
+        if (newLabel && !availableLabels.includes(newLabel)) {
+            e.preventDefault();
+            try {
+                const endpoint = `/api/tags`
+                const response = await fetch(
+                    `https://itp-460-backend.vercel.app${endpoint}`,
+                    {
+                        method: "POST", 
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({name: newLabel, color:"grey"})
+                    }
+                );
+            
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+            
+                alert("Tags updated successfully!");
+            } catch (err) {
+                alert("Something went wrong: " + err.message);
+            }
+            setNewLabel(''); 
+            fetchTags();
+        }
+    };
+
+    // marks task as complete 
     async function handleMarkAsCompelte(id) {
         try {
             const endpoint = `/api/reminders/${id}`;
@@ -83,6 +109,7 @@ export default function EditTaskModal({ isOpen, onClose, task }) {
             console.error('Error updating reminder:', err);
         }
         onClose();
+        window.location.reload();
     }
 
     const handleSubmit = async (e) => {
@@ -108,7 +135,7 @@ export default function EditTaskModal({ isOpen, onClose, task }) {
             const response = await fetch(
                 `https://itp-460-backend.vercel.app${endpoint}`,
                 {
-                    method: "PUT",
+                    method: "PATCH",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(taskData),
                 }
@@ -124,6 +151,7 @@ export default function EditTaskModal({ isOpen, onClose, task }) {
         }
     
         onClose(); // Close the modal
+        window.location.reload();
     };
 
     if (!isOpen) return null;
