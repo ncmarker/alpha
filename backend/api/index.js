@@ -185,9 +185,9 @@ app.get('/api/tags', async (req, res) => {
 
 
 // Update existing reminder
-app.put('/api/reminders/:reminderId', async (req, res) => {
+app.patch('/api/reminders/:reminderId', async (req, res) => {
     const { reminderId } = req.params;
-    const { user_id, title, description, due_date, tag } = req.body;
+    const { user_id, title, description, due_date, tag, is_complete } = req.body;
   
     const updateData = {};
   
@@ -195,6 +195,7 @@ app.put('/api/reminders/:reminderId', async (req, res) => {
     if (title !== undefined) updateData.title = title;
     if (description !== undefined) updateData.description = description;
     if (due_date !== undefined) updateData.due_date = due_date;
+    if (is_complete !== undefined) updateData.is_complete = is_complete;
 
     console.log("Update Data before tag:", updateData);
 

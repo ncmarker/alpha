@@ -1,39 +1,121 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-export default function({ isOpen, onClose }) {
+export default function AddTaskModal ({ isOpen, onClose }) {
     const [taskName, setTaskName] = useState('');
-    const [availableLabels, setAvailableLabels] = useState(['Urgent', 'Home', 'Work']); // change when DB added
+    const [availableLabels, setAvailableLabels] = useState([]); // change when DB added
     const [selectedLabels, setSelectedLabels] = useState([]);
     const [newLabel, setNewLabel] = useState(''); 
+    const[newLabelSubmit,setNewLabelSubmit] = useState({name: "",
+        color: "grey",
+      })
     const [dueDate, setDueDate] = useState('');
     const [dueTime, setDueTime] = useState('');
     const [comments, setComments] = useState('');
+    const [tags, setTags] = useState([]);
+    const [newTask,setNewTask] =  useState({
+        user_id: "",
+        title: "",
+        tag_id: "",
+        description: "",
+        due_date: ""})
 
-    // selecting label(s) to add to current task
-    const handleLabelChange = (label) => {
-    if (selectedLabels.includes(label)) {
-        setSelectedLabels(selectedLabels.filter((l) => l !== label));
-    } else {
-        setSelectedLabels([...selectedLabels, label]);
-    }
-    };
+    useEffect(() => {
+        const fetchTags = async () => {
+          try {
+            const endpoint = "/api/tags"; 
+            const response = await fetch(`https://itp-460-backend.vercel.app${endpoint}`, {
+              method: "GET",
+              headers: { "Content-Type": "application/json" }
+            });
+        
+            if (!response.ok) {
+              throw new Error('Failed to fetch tags');
+            }
+        
+            const receivedTags = await response.json();
+            // setTagsList(receivedTags);
+            
+            const tagNames = receivedTags.map(tag => tag.name);
+            setTags(tagNames);  // Store tag names for comparison
+            
+          } catch (err) {
+            console.error('Error fetching tags:', err);
+          }
+        };
+      
+        fetchTags();
+      }, []);
 
     // creating a new label
-    const handleAddLabel = () => {
+    const handleAddLabel = async (e) => {
     if (newLabel && !availableLabels.includes(newLabel)) {
-        setAvailableLabels([...availableLabels, newLabel]);
+        setNewLabelSubmit({name:newLabel, color:"grey"});
+    e.preventDefault();
+        try {
+            const endpoint = `/api/tags`
+            console.log(JSON.stringify(newLabelSubmit))
+            const response = await fetch(
+            `https://itp-460-backend.vercel.app${endpoint}`,
+            {
+            method: "POST", 
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newLabelSubmit)
+            }
+        );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      alert("Tags updated successfully!");
+    } catch (err) {
+      // console.log(profileData)
+      alert("Something went wrong: " + err.message);
+    }
         setNewLabel(''); 
     }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // form submission logic here (for now, just log to console)
-        console.log({ taskName, selectedLabels, dueDate, dueTime, comments });
-
-        onClose();
+    
+        const due = `${dueDate} ${dueTime}`;
+        const userId = JSON.parse(sessionStorage.getItem("currentUser"));
+    
+        // Construct the task object locally
+        const taskToSubmit = {
+            user_id: userId,
+            title: taskName,
+            tag_id: selectedLabels + 1, // Adjust based on how tag_id is determined
+            description: comments,
+            due_date: due,
+        };
+    
+        console.log("Submitting task:", taskToSubmit);
+    
+        try {
+            const endpoint = `/api/reminders`;
+            const response = await fetch(
+                `https://itp-460-backend.vercel.app${endpoint}`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(taskToSubmit),
+                }
+            );
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+    
+            alert("Task added successfully!");
+        } catch (err) {
+            alert("Something went wrong: " + err.message);
+        }
+    
+        onClose(); // Close the modal
     };
+    
 
     if (!isOpen) return null;
 
@@ -54,20 +136,25 @@ export default function({ isOpen, onClose }) {
             </div>
 
             <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Labels</label>
-            <div className="grid grid-cols-2 max-h-32 overflow-auto mb-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))' }}>
-                {availableLabels.map((label, index) => (
-                <label key={index} className="flex items-center mb-2">
-                    <input
-                    type="checkbox"
-                    checked={selectedLabels.includes(label)}
-                    onChange={() => handleLabelChange(label)}
-                    className="mr-2"
-                    />
-                    <span className="text-gray-600">{label}</span>
-                </label>
-                ))}
-            </div>
+  <label className="block text-gray-700 mb-2">Labels</label>
+  <div
+    className="grid grid-cols-2 max-h-32 overflow-auto mb-2"
+    style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))' }}
+  >
+    {tags.map((label, index) => (
+      <label key={index} className="flex items-center mb-2">
+        <input
+          type="radio"
+          name="task-label"
+          checked={selectedLabels === index} // Compare against the index
+          onChange={() => setSelectedLabels(index)} // Set the selected index
+          className="mr-2"
+        />
+        <span className="text-gray-600">{label}</span>
+      </label>
+    ))}
+  </div>
+
             <div className="flex items-center">
                 <input
                 type="text"
@@ -107,7 +194,7 @@ export default function({ isOpen, onClose }) {
             </div>
 
             <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Comments</label>
+            <label className="block text-gray-700 mb-2">Description</label>
             <textarea
                 value={comments}
                 onChange={(e) => setComments(e.target.value)}
