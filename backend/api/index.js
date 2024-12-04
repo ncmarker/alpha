@@ -164,7 +164,8 @@ app.post('/api/tags', async (req, res) => {
     }
 });
 
-// Get all tags
+
+// get all tags
 app.get('/api/tags', async (req, res) => {
     try {
         const { data, error } = await supabase
@@ -177,7 +178,8 @@ app.get('/api/tags', async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
-    });
+});
+
 
 // Update existing reminder
 app.put('/api/reminders/:reminderId', async (req, res) => {
@@ -237,6 +239,67 @@ app.put('/api/reminders/:reminderId', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Something went wrong while updating the reminder' });
+    }
+});
+
+// get user info for a specific user 
+app.get('/api/users/:userId', async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        const { data, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', userId);
+
+        if (error) throw error;
+
+        res.status(200).json(data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// update user info for a specific user
+app.patch('/api/users/:userId', async (req, res) => {
+    const { userId } = req.params;
+    const { first_name, last_name, email, goal, monthly_goal } = req.body;
+  
+    const updateData = {};
+  
+    if (first_name !== undefined) updateData.first_name = first_name;
+    if (last_name !== undefined) updateData.last_name = last_name;
+    if (email !== undefined) updateData.email = email;
+    if (goal !== undefined) updateData.goal = goal;
+    if (monthly_goal !== undefined) updateData.monthly_goal = monthly_goal;
+
+    if (Object.keys(updateData).length === 0) {
+        return res.status(400).json({ error: 'At least one field (first_name, last_name, email, goal, monthly_goal) must be provided for update' });
+      }
+
+    console.log("Update Data before tag:", updateData);
+
+    try {
+        const { data, error } = await supabase
+            .from('users')
+            .update(updateData)
+            .eq('id', userId)
+            .select('*'); // will return updated user
+
+        if (error) {
+            return res.status(500).json({ error: 'Error updating user data' });
+        }
+
+        if (data.length === 0) {
+            return res.status(404).json({ error: `User with id ${userId} not found` });
+        }
+
+        res.status(200).json({ message: 'User updated successfully', user: data[0] });
+    
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Error finding the user' });
     }
 });
   
