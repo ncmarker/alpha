@@ -1,4 +1,4 @@
-import ManageList from '../components/ManageTasks';
+import ManageList from '../components/ManageList';
 import AddTaskModal from '../components/AddTaskModal';
 import EditTaskModal from '../components/EditTaskModal';
 

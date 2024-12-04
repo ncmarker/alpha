@@ -58,13 +58,13 @@ function SearchTasks() {
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
         />
-        <button
+        {/* <button
           onClick={() => setFilter(null)}
           className={`px-4 py-2 rounded-lg ${filter === null ? "bg-blue-500 text-white" : "bg-gray-100"}`}
         >
           Date
         </button>
-        <button className="bg-blue-500 text-white px-4 py-2 rounded-lg">Filters</button>
+        <button className="bg-blue-500 text-white px-4 py-2 rounded-lg">Filters</button> */}
       </div>
       <div>
         {filteredTasks.map((task) => (

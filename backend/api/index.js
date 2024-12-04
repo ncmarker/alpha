@@ -101,22 +101,25 @@ app.get('/api/reminders/:userId', async (req, res) => {
 
 // Add a reminder
 app.post('/api/reminders', async (req, res) => {
-    const { user_id, title, description, due_date } = req.body;
+    const { user_id, title, description, due_date, tag_id } = req.body;
 
     if (!user_id || !title || !description || !due_date) {
         return res.status(400).json({ error: 'All fields are required' });
     }
 
     try {
-        const { data, error } = await supabase.from('reminders').insert([
-            {
-                user_id,
-                title,
-                description,
-                due_date,
-            },
-        ])
-        .select('*');
+        const reminderData = {
+            user_id,
+            title,
+            description,
+            due_date,
+        };
+
+        if (tag_id) {
+            reminderData.tag_id = tag_id; // Add tag_id if provided
+        }
+
+        const { data, error } = await supabase.from('reminders').insert([reminderData]).select('*');
 
         console.log(data);
         console.log(error);
