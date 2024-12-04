@@ -78,7 +78,7 @@ useEffect(() => {
             <div className="flex-grow flex flex-row flex-wrap p-4"> 
             <ChartAnalysis tasks={tasks} tags = {tagsList}/>
 
-                {/* <TaskList />  */}
+                <TaskList /> 
             </div>
       </div>
     );
