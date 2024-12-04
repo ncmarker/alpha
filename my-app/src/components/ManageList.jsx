@@ -1,14 +1,17 @@
 import { React, useState } from "react";
 import { useEffect } from "react";
 import { FaPlus , FaMinus , FaPen} from 'react-icons/fa';
+
 import AddTaskModal from "./AddTaskModal";
 import EditTaskModal from "./EditTaskModal";
+import SendEmailModal from "./SendEmailModal";
+
 
 export default function ManageList() {
     const [addTaskModalOpen, setAddTaskModalOpen] = useState(false);
     
-    const [prevTask, setPrevTask] = useState(null);
     const [tasks, setTasks] = useState([]);
+    const [finishedTasks, setFinishedTasks] = useState([]);
     
 
     const handleToggleModal = () => {
@@ -52,8 +55,10 @@ export default function ManageList() {
               throw new Error('Failed to fetch tasks');
             }
             const first = await response.json();
-            setTasks(first);
-            console.log('Fetched tasks:', tasks);
+            setTasks(first.filter((task) => !task.is_complete));
+            setFinishedTasks(first.filter((task) => task.is_complete));
+            // console.log('Fetched tasks:', tasks);
+            // console.log(finishedTasks);
           } catch (err) {
             console.error('Error fetching tasks:', err);
           }
@@ -63,33 +68,112 @@ export default function ManageList() {
       }, []);
 
 
+    const handleRemoveTaskFinish = (id) => {
+        setFinishedTasks((finishedList) => finishedList.filter(finish => finish.id !== id));
+        deleteTask(id);
+    };
+
+    async function deleteTask(id) {
+        try {
+            const endpoint = `/api/reminders/${id}`;
+            const response = await fetch(
+                `https://itp-460-backend.vercel.app${endpoint}`,
+                {
+                    method: "DELETE",
+                    headers: { "Content-Type": "application/json" }
+                }
+            );
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+    
+            alert("Task removed successfully!");
+        } catch (err) {
+            alert("Something went wrong: " + err.message);
+        }
+    }
+
+
     // sample tasks data
     // const[tasks,setTasks] =  useState([{ id: 1, title: "Finish project report", tags: []);
 
     return (
-        <div className="w-full min-w-[300px] mx-auto mb-8 p-4">
-            
-            {/* show modal when add item clicked */}
-            {addTaskModalOpen && <AddTaskModal isOpen={addTaskModalOpen} onClose={handleToggleModal}/> }
-            
-
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-medium">Upcoming Tasks</h2>
-                <button className="flex items-center text-blue-600 hover:text-blue-800">
-                    <FaPlus className="h-5 w-5" />
-                    <span className="ml-2" onClick={handleToggleModal}>Add Task</span>
-                </button>
+        <>  
+            {/* task breakdown */}
+            <div className="w-full min-w-[300px] mx-auto mb-4 p-4">
+                <h2 className="text-2xl font-medium mb-4">Task Breakdown</h2>
+                <div className="flex justify-between mb-4">
+                    <div className="flex w-1/2 mb-4 p-5 rounded 1-g border border-gray-500 bg-gray-100">
+                        <div className="flex flex-wrap flex-col">
+                            <p className="text-gray-500">Total Tasks</p>
+                            <span className= "mb-5 pt-4 text-5xl">{tasks.length + finishedTasks.length}</span>
+                        </div>
+                    </div>
+                    <div className="flex rounded 1-g w-1/5 mb-4 p-5 border border-green-500 bg-green-200">
+                        <div className="flex flex-wrap flex-col">
+                            <p className="text-gray-500">Finished Tasks</p>
+                            <span className= "mb-5 pt-4 text-5xl">{finishedTasks.length}</span>
+                        </div>
+                    </div>
+                    <div className="flex rounded 1-g w-1/5 mb-4 p-5 border border-red-500 bg-red-200">
+                        <div className="flex flex-wrap flex-col">
+                            <p className="text-gray-500">Unfinished Tasks</p>
+                            <span className= "mb-5 pt-4 text-5xl">{tasks.length}</span>
+                        </div>
+                    </div>
+                </div>
+             </div>
+            {/* list of upcoming tasks */}
+            <div className="w-1/2 mx-auto mb-4 p-4">
+                
+                {addTaskModalOpen && <AddTaskModal isOpen={addTaskModalOpen} onClose={handleToggleModal}/> }
+                
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-2xl font-medium">Upcoming Tasks</h2>
+                    <button className="flex items-center text-blue-600 hover:text-blue-800">
+                        <FaPlus className="h-5 w-5" />
+                        <span className="ml-2" onClick={handleToggleModal}>Add Task</span>
+                    </button>
+                </div>
+                <div className="max-h-[400px] overflow-y-auto bg-gray-100 p-4 rounded-lg border border-gray-300">
+                    {tasks.map(task => (
+                    <TaskItem key={task.id} task={task} handleRemoveTask={handleRemoveTask} />
+                    ))}
+                </div>
             </div>
-            <div className="max-h-[675px] overflow-y-auto bg-gray-100 p-4 rounded-lg border border-gray-300">
-                {tasks.map(task => (
-                <TaskItem key={task.id} task={task} handleRemoveTask={handleRemoveTask} />
-                ))}
+            {/* finish task list */}
+            <div className="w-1/2">
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-2xl font-medium">Finished Tasks</h2>
+                    
+                </div>
+                <div className="max-h-[675px] overflow-y-auto bg-gray-100 p-4 rounded-lg border border-gray-300">
+                    {finishedTasks.map(task => (
+                        <TaskItem key={task.id} task={task} handleRemoveTask={handleRemoveTask} />
+                    ))}
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 
+
+
 export function TaskItem({task, handleRemoveTask}) {
+
+    // email modal 
+    const [sendEmailModalOpen, setEmailModalOpen] = useState(false);
+
+    const openEmailModal = () => {
+        setEmailModalOpen(!sendEmailModalOpen);
+    }
+
+    const closeEmailModal = (item) => {
+        setEmailModalOpen(!sendEmailModalOpen);
+    }
+
+    // edit modal
     const [editTaskModalOpen, setEditTaskModalOpen] = useState(false);
 
      const handleEditToggleModal = () => {
@@ -135,6 +219,7 @@ export function TaskItem({task, handleRemoveTask}) {
   return (
     <div className="bg-gray-50 border border-gray-300 rounded-lg p-4 mb-4">
         {editTaskModalOpen && <EditTaskModal isOpen={editTaskModalOpen} onClose={handleEditToggleModal} task={task}/> }
+        {sendEmailModalOpen && <SendEmailModal isOpen={sendEmailModalOpen} onClose={closeEmailModal} task={task}/>}
         <div className="flex flex-row justify-between">
             <div className="flex flex-col">
                 <div className="text-lg font-semibold">{task.title}</div>
@@ -164,6 +249,10 @@ export function TaskItem({task, handleRemoveTask}) {
                     <button className="flex items-center text-blue-600 hover:text-blue-800" onClick={()=>handleRemoveTask(task.id)}>
                         <FaMinus className="h-5 w-5" />
                         <span className="ml-2" >Remove Task</span>
+                    </button>
+                    <button className="flex items-center text-black-600 hover:text-blue-800" onClick={() => [openEmailModal(task), closeEmailModal]}>
+                        {/* <FaMinus className="h-5 w-5" /> */}
+                        <span className="ml-2" >Email Task</span>
                     </button>
                     
                 </div>

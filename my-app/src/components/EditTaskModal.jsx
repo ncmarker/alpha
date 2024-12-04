@@ -65,6 +65,26 @@ export default function EditTaskModal({ isOpen, onClose, task }) {
         }
     };
 
+    async function handleMarkAsCompelte(id) {
+        try {
+            const endpoint = `/api/reminders/${id}`;
+            const response = await fetch(`http://localhost:3000${endpoint}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    is_complete: true,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update task');
+            }
+        } catch (err) {
+            console.error('Error updating reminder:', err);
+        }
+        onClose();
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -190,6 +210,11 @@ export default function EditTaskModal({ isOpen, onClose, task }) {
                     </div>
 
                     <div className="flex justify-end">
+                        <button
+                            type="button"
+                            className="bg-gray-300 text-gray-700 rounded px-4 py-2 mr-2"
+                            onClick={() => handleMarkAsCompelte(task.id)}
+                        >Mark as complete</button>
                         <button
                             type="button"
                             onClick={onClose}

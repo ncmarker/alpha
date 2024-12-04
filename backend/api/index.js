@@ -101,22 +101,25 @@ app.get('/api/reminders/:userId', async (req, res) => {
 
 // Add a reminder
 app.post('/api/reminders', async (req, res) => {
-    const { user_id, title, description, due_date } = req.body;
+    const { user_id, title, description, due_date, tag_id } = req.body;
 
     if (!user_id || !title || !description || !due_date) {
         return res.status(400).json({ error: 'All fields are required' });
     }
 
     try {
-        const { data, error } = await supabase.from('reminders').insert([
-            {
-                user_id,
-                title,
-                description,
-                due_date,
-            },
-        ])
-        .select('*');
+        const reminderData = {
+            user_id,
+            title,
+            description,
+            due_date,
+        };
+
+        if (tag_id) {
+            reminderData.tag_id = tag_id; // Add tag_id if provided
+        }
+
+        const { data, error } = await supabase.from('reminders').insert([reminderData]).select('*');
 
         console.log(data);
         console.log(error);
@@ -182,9 +185,9 @@ app.get('/api/tags', async (req, res) => {
 
 
 // Update existing reminder
-app.put('/api/reminders/:reminderId', async (req, res) => {
+app.patch('/api/reminders/:reminderId', async (req, res) => {
     const { reminderId } = req.params;
-    const { user_id, title, description, due_date, tag } = req.body;
+    const { user_id, title, description, due_date, tag, is_complete } = req.body;
   
     const updateData = {};
   
@@ -192,6 +195,7 @@ app.put('/api/reminders/:reminderId', async (req, res) => {
     if (title !== undefined) updateData.title = title;
     if (description !== undefined) updateData.description = description;
     if (due_date !== undefined) updateData.due_date = due_date;
+    if (is_complete !== undefined) updateData.is_complete = is_complete;
 
     console.log("Update Data before tag:", updateData);
 
