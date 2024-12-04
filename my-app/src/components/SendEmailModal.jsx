@@ -4,12 +4,11 @@ export default function SendEmailModal({ isOpen, onClose, task}) {
     const [email, setEmail] = useState('');
 
     const handleSubmit = (e) => {
-        console.log(task);
         e.preventDefault();
         if (email){
             // Generate the mailto link with task details
             const subject = `Task Reminder: ${task.title}`;
-            const body = `You are being invited to a task! See below for additional Information.\n\nTask: ${task.title}\nDue Date: ${task.dueDate}\nDescription: ${task.description || 'N/A'}`;
+            const body = `You are being invited to a task! See below for additional Information.\n\nTask: ${task.title}\nDue Date: ${task.due_date}\nDescription: ${task.description || 'N/A'}`;
             const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
             // Open the email client with the pre-filled data
