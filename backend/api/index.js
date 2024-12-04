@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 require('dotenv').config();
 
 const app = express();
-// const PORT = 5001;  // for local dev
+const PORT = 3000;  // for local dev
 
 // Enable CORS and JSON parsing
 app.use(cors());
@@ -164,9 +164,9 @@ app.post('/api/tags', async (req, res) => {
     }
 });
 
+
 // get all tags
 app.get('/api/tags', async (req, res) => {
-
     try {
         const { data, error } = await supabase
             .from('tags')
@@ -179,6 +179,7 @@ app.get('/api/tags', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 // Update existing reminder
 app.put('/api/reminders/:reminderId', async (req, res) => {
@@ -303,5 +304,5 @@ app.patch('/api/users/:userId', async (req, res) => {
 });
   
 
-// app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));  // for local dev
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));  // for local dev
 module.exports = app;

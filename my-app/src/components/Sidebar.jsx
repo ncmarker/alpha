@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaHome, FaUser, FaCheckSquare, FaSignOutAlt, FaCircleNotch, FaBars, FaChevronLeft } from 'react-icons/fa'; // Updated icons
+import { FaHome, FaUser, FaCheckSquare, FaSignOutAlt, FaCircleNotch, FaBars, FaChevronLeft, FaSearch} from 'react-icons/fa'; // Updated icons
 import { useNavigate } from 'react-router-dom';
 import { IoSparkles } from "react-icons/io5"; // more icon
 import { Link } from 'react-router-dom';
@@ -35,6 +35,7 @@ export default function Sidebar({onLogout}) {
             <MenuItem icon={<IoSparkles />} label="Insights" to="/insights" />
             <MenuItem icon={<FaCheckSquare />} label="Manage Tasks" to="/manage-tasks" />
             <MenuItem icon={<FaUser />} label="Profile" to="/profile" />
+            <MenuItem icon={<FaSearch />} label="Search" to="/search" />
         </nav>
 
         <div className={`p-4 ${expanded ? 'block' : 'hidden'}`}>
