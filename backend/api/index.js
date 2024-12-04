@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 require('dotenv').config();
 
 const app = express();
-const PORT = 3000;  // for local dev
+// const PORT = 3000;  // for local dev
 
 // Enable CORS and JSON parsing
 app.use(cors());
@@ -304,5 +304,5 @@ app.patch('/api/users/:userId', async (req, res) => {
 });
   
 
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));  // for local dev
+// app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));  // for local dev
 module.exports = app;
