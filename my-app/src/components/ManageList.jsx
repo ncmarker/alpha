@@ -136,7 +136,7 @@ export default function ManageList() {
                         <span className="ml-2" onClick={handleToggleModal}>Add Task</span>
                     </button>
                 </div>
-                <div className="max-h-[400px] overflow-y-auto bg-gray-100 p-4 rounded-lg border border-gray-300">
+                <div className="max-h-[350px] overflow-y-auto bg-gray-100 p-4 rounded-lg border border-gray-300">
                     {tasks.map(task => (
                     <TaskItem key={task.id} task={task} handleRemoveTask={handleRemoveTask} />
                     ))}
