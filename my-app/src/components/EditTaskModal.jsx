@@ -94,7 +94,7 @@ export default function EditTaskModal({ isOpen, onClose, task }) {
     async function handleMarkAsCompelte(id) {
         try {
             const endpoint = `/api/reminders/${id}`;
-            const response = await fetch(`http://localhost:3000${endpoint}`, {
+            const response = await fetch(`https://itp-460-backend.vercel.app${endpoint}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
